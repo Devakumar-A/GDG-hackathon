@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place an Order</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #222;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛍️ Place an Order</h1>
+        <p>Buy fresh fish directly from nearby fishermen.</p>
+        <button onclick="getLocation()">📍 Get Current Location</button>
+        <div id="locationResult"></div>
+        <div id="fishList" style="display: none;">
+            <h2>🐟 Available Fish & Prices</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fish Name</th>
+                        <th>Price (₹/kg)</th>
+                        <th>Details</th>
+                        <th>Order</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Seer Fish</td>
+                        <td>₹800</td>
+                        <td>Rich in Omega-3, great for grilling.</td>
+                        <td><button onclick="orderFish('Seer Fish')">🛒 Order Now</button></td>
+                    </tr>
+                    <tr>
+                        <td>Prawns</td>
+                        <td>₹600</td>
+                        <td>Freshwater variety, perfect for curries.</td>
+                        <td><button onclick="orderFish('Prawns')">🛒 Order Now</button></td>
+                    </tr>
+                    <tr>
+                        <td>Pomfret</td>
+                        <td>₹900</td>
+                        <td>Soft texture, best for frying.</td>
+                        <td><button onclick="orderFish('Pomfret')">🛒 Order Now</button></td>
+                    </tr>
+                    <tr>
+                        <td>Mackerel</td>
+                        <td>₹300</td>
+                        <td>High in protein, commonly used in Indian dishes.</td>
+                        <td><button onclick="orderFish('Mackerel')">🛒 Order Now</button></td>
+                    </tr>
+                    <tr>
+                        <td>Tuna</td>
+                        <td>₹700</td>
+                        <td>Excellent for sushi and steaks.</td>
+                        <td><button onclick="orderFish('Tuna')">🛒 Order Now</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button onclick="goBack()">🔙 Back to Dashboard</button>
+    </div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showLocation, showError);
+            } else {
+                document.getElementById("locationResult").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showLocation(position) {
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+            document.getElementById("locationResult").innerHTML = `<p>📍 Your Location: ${latitude}, ${longitude}</p>`;
+            document.getElementById("fishList").style.display = "block";
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("locationResult").innerHTML = "⚠️ Location access denied by user.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("locationResult").innerHTML = "⚠️ Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("locationResult").innerHTML = "⚠️ The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("locationResult").innerHTML = "⚠️ An unknown error occurred.";
+                    break;
+            }
+        }
+
+        function orderFish(fishName) {
+            alert(`Your order for ${fishName} has been placed successfully! 🛒`);
+        }
+
+        function goBack() {
+            window.location.href = "buyer.html";
+        }
+    </script>
+</body>
+</html>

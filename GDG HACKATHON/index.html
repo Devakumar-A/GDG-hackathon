@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kadal Vizhi Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; background: linear-gradient(to right, #00c6ff, #0072ff); margin: 0;">
+
+    <div style="margin: 80px auto; padding: 30px; background: white; width: 90%; max-width: 400px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);">
+        <pre><h1 style="color: #0072ff;">🌊 Kadal Vizhi  
+        Login Dock</h1></pre>
+
+        <label for="role" style="font-weight: bold;">Choose Your Role:</label>
+        <select id="role" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="authority">Authority</option>
+            <option value="fisherman">Fisherman</option>
+            <option value="buyer">Buyer</option>
+        </select>
+
+        <input type="text" id="username" placeholder="Enter Username" 
+            style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc;">
+        
+        <input type="password" id="password" placeholder="Enter Password" 
+            style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc;">
+
+        <button onclick="login()" 
+            style="width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; background: #0072ff; color: white; font-size: 16px; cursor: pointer;">
+            Login
+        </button>
+
+        <p id="error-message" style="color: red; display: none; margin-top: 10px;">Invalid Credentials</p>
+
+        <hr style="margin: 20px 0; border: 1px solid #ddd;"> <!-- Separator -->
+
+        <!-- Evaluator Access Button -->
+        <button onclick="evaluatorAccess()" 
+            style="width: 100%; padding: 12px; background: #ff9900; border: none; border-radius: 5px; color: white; font-size: 16px; cursor: pointer;">
+            🎓 Evaluator Access (No Login)
+        </button>
+
+    </div>
+
+    <script>
+        function login() {
+            let role = document.getElementById("role").value;
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let errorMessage = document.getElementById("error-message");
+
+            if (role === "evaluator") {
+                evaluatorAccess(); // Evaluator bypasses login
+                return;
+            }
+
+            // Check Credentials
+            if (username === "Devakumar A" && password === "Devakumar@123") {
+                errorMessage.style.display = "none"; // Hide error if correct
+                redirectUser(role);
+            } else {
+                errorMessage.style.display = "block"; // Show error if wrong credentials
+            }
+        }
+
+        function evaluatorAccess() {
+            let role = document.getElementById("role").value;
+            redirectUser(role); // Redirect evaluator just like a logged-in user
+        }
+
+        function redirectUser(role) {
+            if (role === "authority") {
+                window.location.href = "authority.html";
+            } else if (role === "fisherman") {
+                window.location.href = "fisherman.html";
+            } else if (role === "buyer") {
+                window.location.href = "buyer.html";
+            } 
+        }
+    </script>
+
+</body>
+</html>

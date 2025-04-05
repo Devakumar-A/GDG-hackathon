@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Sea Weather</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a192f;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #112d4e;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #00aaff;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #00aaff;
+            border-radius: 5px;
+            background: #1b2b44;
+            color: white;
+        }
+
+        button {
+            background: #00aaff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0077cc;
+        }
+
+        .weather-card {
+            background: #1b2b44;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+            display: none;
+            border-left: 5px solid #00aaff;
+        }
+
+        .warning {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .safe { background: #155724; color: #d4edda; }
+        .caution { background: #856404; color: #fff3cd; }
+        .danger { background: #721c24; color: #f8d7da; }
+
+        #extremeWeather {
+            margin-top: 20px;
+            background: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #f8d7da;
+            border-left: 5px solid #ff4d4d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🌊 Check Sea Weather</h1>
+        <p>Get real-time weather updates for fishing.</p>
+        <input type="text" id="location" placeholder="Enter location (e.g., Chennai)">
+        <button onclick="getWeather()">🔍 Get Weather</button>
+        <button onclick="getCurrentLocation()">📍 Use My Location</button>
+
+        <div id="weatherResult" class="weather-card"></div>
+
+        <h2>⚠️ Extreme Weather Alerts</h2>
+        <div id="extremeWeather">
+            <p><b>🌊 Bay of Bengal:</b> Heavy storms & strong winds (15 m/s) ⚠️</p>
+            <p><b>🌊 Chennai Coast:</b> High waves & thunderstorms 🚨</p>
+            <p><b>🌊 Andaman Sea:</b> Cyclonic winds detected (20 m/s) ⚠️</p>
+        </div>
+
+        <button onclick="goBack()">🔙 Back to Dashboard</button>
+    </div>
+
+    <script>
+        async function getWeather(location = "") {
+            if (!location) {
+                location = document.getElementById("location").value;
+            }
+            if (!location) {
+                alert("Please enter a location or use your current location.");
+                return;
+            }
+
+            let apiKey = "e78e80bf62f693de60b5ba9d2fd932f4";
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                if (data.cod === 200) {
+                    let windSpeed = data.wind.speed;
+                    let condition = data.weather[0].main;
+                    let temp = data.main.temp;
+                    let weatherDesc = data.weather[0].description;
+
+                    let warningClass = "safe";
+                    let warningMessage = "✅ Safe fishing conditions.";
+                    
+                    if (windSpeed > 8) {
+                        warningClass = "caution";
+                        warningMessage = "⚠️ Caution: Strong winds, be careful!";
+                    }
+                    if (windSpeed > 12 || ["Thunderstorm", "Extreme"].includes(condition)) {
+                        warningClass = "danger";
+                        warningMessage = "🚨 Danger! Unsafe fishing conditions!";
+                    }
+
+                    document.getElementById("weatherResult").innerHTML = `
+                        <h3>📍 ${data.name}, ${data.sys.country}</h3>
+                        <p>🌡️ Temperature: <b>${temp}°C</b></p>
+                        <p>💨 Wind Speed: <b>${windSpeed} m/s</b></p>
+                        <p>🌊 Condition: <b>${weatherDesc}</b></p>
+                        <p class="warning ${warningClass}">${warningMessage}</p>
+                    `;
+                    document.getElementById("weatherResult").style.display = "block";
+                } else {
+                    document.getElementById("weatherResult").innerHTML = `<p style="color: red;">⚠️ Location not found!</p>`;
+                }
+            } catch (error) {
+                document.getElementById("weatherResult").innerHTML = `<p style="color: red;">⚠️ Error fetching data!</p>`;
+            }
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async function (position) {
+                        let lat = position.coords.latitude;
+                        let lon = position.coords.longitude;
+                        let apiKey = "e78e80bf62f693de60b5ba9d2fd932f4";
+                        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+                        let response = await fetch(url);
+                        let data = await response.json();
+                        getWeather(data.name);
+                    },
+                    function () {
+                        alert("Location access denied. Please enter a location manually.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function goBack() {
+            window.location.href = "fisherman.html";
+        }
+    </script>
+
+</body>
+</html>
+
+

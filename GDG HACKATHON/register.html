@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaLink - Register</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>📝 Register for AquaLink</h1>
+
+        <!-- User Role Selection -->
+        <label for="newUserRole">Select Your Role:</label>
+        <select id="newUserRole">
+            <option value="authority">Authority</option>
+            <option value="fisherman">Fisherman</option>
+            <option value="buyer">Buyer</option>
+        </select>
+
+        <!-- Registration Form -->
+        <input type="text" id="newUsername" placeholder="Choose Username">
+        <input type="password" id="newPassword" placeholder="Choose Password">
+        <button onclick="registerUser()">Register</button>
+
+        <!-- Success Message -->
+        <p id="successMessage" class="hidden">Registration Successful! Go to <a href="index.html">Login</a></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

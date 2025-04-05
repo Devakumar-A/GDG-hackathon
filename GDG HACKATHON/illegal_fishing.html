@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Illegal Fishing</title>
+    <link rel="stylesheet" href="authority_style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Monitor Illegal Fishing</h1>
+        <p>Live tracking of unauthorized fishing activities.</p>
+        <div id="map" style="width: 100%; height: 400px;"></div>
+        
+        <table border="1" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+                <tr style="background: #FF4C4C; color: white;">
+                    <th>Boat ID</th>
+                    <th>Fisherman</th>
+                    <th>Location</th>
+                    <th>Illegal Activity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>TN-12345</td>
+                    <td>Daniel</td>
+                    <td>10.9, 79.8</td>
+                    <td>Fishing in restricted zone</td>
+                    <td><button onclick="revokePermit(this)">🚫 Revoke Permit</button></td>
+                </tr>
+                <tr>
+                    <td>TN-67890</td>
+                    <td>Durai Singam</td>
+                    <td>11.2, 80.1</td>
+                    <td>Overfishing beyond quota</td>
+                    <td><button onclick="revokePermit(this)">🚫 Revoke Permit</button></td>
+                </tr>
+                <tr>
+                    <td>TN-54321</td>
+                    <td>Walter</td>
+                    <td>10.7, 79.6</td>
+                    <td>Using banned fishing nets</td>
+                    <td><button onclick="revokePermit(this)">🚫 Revoke Permit</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button onclick="goBack()">🔙 Back to Dashboard</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([10.8505, 79.7832], 7); // Tamil Nadu Coast
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'DEVAKUMAR A'
+        }).addTo(map);
+
+        var illegalActivities = [
+            { lat: 10.9, lng: 79.8, title: "Fishing in restricted zone" },
+            { lat: 11.2, lng: 80.1, title: "Overfishing beyond quota" },
+            { lat: 10.7, lng: 79.6, title: "Using banned fishing nets" }
+        ];
+
+        illegalActivities.forEach(activity => {
+            L.marker([activity.lat, activity.lng]).addTo(map)
+                .bindPopup(`<b>${activity.title} ⚠️</b>`);
+        });
+
+        function revokePermit(button) {
+            button.innerText = "🚫 Permit Revoked";
+            button.style.backgroundColor = "red";
+            button.disabled = true;
+        }
+
+        function goBack() {
+            window.location.href = "authority.html";
+        }
+    </script>
+</body>
+</html>
+
+

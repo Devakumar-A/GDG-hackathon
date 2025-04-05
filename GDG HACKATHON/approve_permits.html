@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Permits</title>
+    <link rel="stylesheet" href="authority_style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Approve Fishing Permits</h1>
+        <table border="1">
+            <tr>
+                <th>Fisherman</th>
+                <th>Boat ID</th>
+                <th>Fishing Area</th>
+                <th>Approve</th>
+            </tr>
+            <!-- Adding 50 rows dynamically using JavaScript -->
+            <tbody id="permitTable"></tbody>
+        </table>
+        <button onclick="goBack()">🔙 Back to Dashboard</button>
+    </div>
+
+    <script>
+        const fishermen = [
+            "MS Dhoni", "Virat Kholi", "Rohit Sharma", "Dinesh", "Prakash", "Karthik", "Vijay", "Mohan", "Ramesh", "Sanjay",
+            "Anand", "Ravi", "Senthil", "Vikram", "Gopi", "Sakthivel", "Praveen", "Saravanan", "Balaji", "Manoj",
+            "Sathish", "Kumar", "Bala", "Naveen", "Venkatesh", "Deepak", "Ganesh", "Lokesh", "Raghu", "Varun",
+            "Harish", "Gowtham", "Prem", "Kishore", "Aravind", "Jeeva", "Murali", "Surya", "Yogesh", "Siddharth",
+            "Siva", "Madhan", "Tharun", "Ashok", "Jagadeesh", "Sundar", "Ajith", "Guru", "Dharshan", "Venkat"
+        ];
+
+        const boatIDs = Array.from({ length: 50 }, (_, i) => `TN-${10000 + i}`);
+        const fishingAreas = ["Bay of Bengal", "Indian Ocean", "Arabian Sea", "Gulf of Mannar"];
+
+        function generateTable() {
+            let table = document.getElementById("permitTable");
+
+            for (let i = 0; i < 50; i++) {
+                let row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${fishermen[i]}</td>
+                    <td>${boatIDs[i]}</td>
+                    <td>${fishingAreas[i % fishingAreas.length]}</td>
+                    <td><button onclick="approvePermit(this)">✔ Approve</button></td>
+                `;
+                table.appendChild(row);
+            }
+        }
+
+        function approvePermit(button) {
+            button.innerText = "✅ Approved";
+            button.style.backgroundColor = "green";
+            button.disabled = true;
+        }
+
+        function goBack() {
+            window.location.href = "authority.html";
+        }
+
+        window.onload = generateTable;
+    </script>
+</body>
+</html>

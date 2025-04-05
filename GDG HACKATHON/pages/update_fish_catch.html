@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Fish Catch</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📜 Update Fish Catch</h1>
+        <form id="fishCatchForm">
+            <label for="fishType">🐟 Fish Type:</label>
+            <input type="text" id="fishType" placeholder="Enter fish type" required>
+
+            <label for="quantity">📦 Quantity (kg):</label>
+            <input type="number" id="quantity" placeholder="Enter quantity in kg" required>
+
+            <label for="earnings">💰 Earnings (₹):</label>
+            <input type="number" id="earnings" placeholder="Enter earnings in ₹" required>
+
+            <label for="date">📅 Date:</label>
+            <input type="date" id="date" required>
+
+            <button type="submit">✅ Submit</button>
+        </form>
+
+        <h2>📊 Catch Records</h2>
+        <table id="catchTable">
+            <thead>
+                <tr>
+                    <th>Fish Type</th>
+                    <th>Quantity (kg)</th>
+                    <th>Earnings (₹)</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button onclick="exportToCSV()">📥 Export to CSV</button>
+        <button onclick="clearRecords()">🗑 Clear Records</button>
+        <button onclick="goBack()">🔙 Back to Dashboard</button>        
+    </div>
+
+    <script>
+        document.getElementById("fishCatchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let fishType = document.getElementById("fishType").value;
+            let quantity = document.getElementById("quantity").value;
+            let earnings = document.getElementById("earnings").value;
+            let date = document.getElementById("date").value;
+
+            let table = document.getElementById("catchTable").getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            newRow.innerHTML = `<td>${fishType}</td>
+                                <td>${quantity}</td>
+                                <td>${earnings}</td>
+                                <td>${date}</td>
+                                <td><button class="delete-btn" onclick="deleteRow(this)">❌ Delete</button></td>`;
+
+            saveToLocalStorage();
+            document.getElementById("fishCatchForm").reset();
+        });
+
+        function deleteRow(button) {
+            let row = button.parentNode.parentNode;
+            row.remove();
+            saveToLocalStorage();
+        }
+
+        function saveToLocalStorage() {
+            let tableData = [];
+            document.querySelectorAll("#catchTable tbody tr").forEach(row => {
+                let rowData = [];
+                row.querySelectorAll("td").forEach(cell => rowData.push(cell.innerText));
+                tableData.push(rowData);
+            });
+            localStorage.setItem("catchRecords", JSON.stringify(tableData));
+        }
+
+        function loadFromLocalStorage() {
+            let table = document.getElementById("catchTable").getElementsByTagName('tbody')[0];
+            let data = JSON.parse(localStorage.getItem("catchRecords")) || [];
+            data.forEach(rowData => {
+                let newRow = table.insertRow();
+                newRow.innerHTML = `<td>${rowData[0]}</td>
+                                    <td>${rowData[1]}</td>
+                                    <td>${rowData[2]}</td>
+                                    <td>${rowData[3]}</td>
+                                    <td><button class="delete-btn" onclick="deleteRow(this)">❌ Delete</button></td>`;
+            });
+        }
+
+        function exportToCSV() {
+            let csv = "Fish Type,Quantity (kg),Earnings (₹),Date\n";
+            document.querySelectorAll("#catchTable tbody tr").forEach(row => {
+                let rowData = [];
+                row.querySelectorAll("td").forEach(cell => rowData.push(cell.innerText));
+                csv += rowData.join(",") + "\n";
+            });
+
+            let blob = new Blob([csv], { type: 'text/csv' });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "fish_catch_records.csv";
+            link.click();
+        }
+
+        function clearRecords() {
+            localStorage.removeItem("catchRecords");
+            document.querySelector("#catchTable tbody").innerHTML = "";
+        }
+
+        window.onload = loadFromLocalStorage;
+        function goBack() {
+            window.location.href = "fisherman.html";
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f8ff;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            color: black; /* Fix: Ensure text color is visible */
+        }
+        input::placeholder {
+            color: gray;
+            font-style: italic;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+            color: black; /* Fix: Ensure table text is visible */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        .delete-btn {
+            background: red;
+            color: white;
+            padding: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background: darkred;
+        }
+
+    </style>
+</body>
+</html>
